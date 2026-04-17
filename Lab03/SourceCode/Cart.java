@@ -27,11 +27,11 @@ public class Cart {
     }
 
     // 2. Thêm nhiều DVD (varargs - QUAN TRỌNG)
-//    public void addDigitalVideoDisc(DigitalVideoDisc... dvds) {
-//        for (DigitalVideoDisc dvd : dvds) {
-//            addDigitalVideoDisc(dvd);
-//        }
-//    }
+    public void addDigitalVideoDisc(DigitalVideoDisc... dvds) {
+        for (DigitalVideoDisc dvd : dvds) {
+            addDigitalVideoDisc(dvd);
+        }
+    }
 
     // 3. Thêm 2 DVD
     public void addDigitalVideoDisc(DigitalVideoDisc dvd1, DigitalVideoDisc dvd2) {
@@ -82,9 +82,31 @@ public class Cart {
         for (int i = 0; i < qtyOrdered; i++) {
             System.out.println((i + 1) + ". " + itemsOrdered[i].toString());
         }
-
         System.out.println("Total cost: " + this.totalCost());
         System.out.println("***************************************************");
+    }
+    public void searchById(int id) {
+        for (int i = 0; i < qtyOrdered; i++) {
+            if (itemsOrdered[i].getId() == id) {
+                System.out.println(itemsOrdered[i].toString());
+                return;
+            }
+        }
+        System.out.println("No matching DVD found.");
+    }
+    public void searchByTitle(String title) {
+        boolean found = false;
+
+        for (int i = 0; i < qtyOrdered; i++) {
+            if (itemsOrdered[i].isMatch(title)) {
+                System.out.println(itemsOrdered[i].toString());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No matching DVD found.");
+        }
     }
 
 }

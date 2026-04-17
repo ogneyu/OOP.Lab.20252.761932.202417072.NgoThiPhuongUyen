@@ -17,8 +17,9 @@ public class CartTest {
         cart.print();
 
         System.out.println("Search by ID:");
+        cart.searchById(2);
 
         System.out.println("Search by Title:");
-
+        cart.searchByTitle("Star Wars");
     }
 }
