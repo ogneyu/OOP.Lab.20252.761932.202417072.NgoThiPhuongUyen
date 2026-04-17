@@ -1,0 +1,37 @@
+Question: Is JAVA a Pass by Value or a Pass by Reference programming language?
+First of all, we recall what is meant by pass by value or pass by reference.
+- Pass by value: The method parameter values are copied to another variable and then the copied
+object is passed to the method. That's why it's called pass by value
+- Pass by reference: An alias or reference to the actual parameter is passed to the method. That's why
+it's called pass by reference.
+
+Answer:
+Java là ngôn ngữ truyền tham trị (pass by value).
+Trong Java, khi gọi một phương thức, giá trị của tham số sẽ được sao chép và truyền vào phương thức. Đối với object, giá trị được truyền là bản sao của tham chiếu (reference), chứ không phải chính đối tượng gốc.
+        public static void swap(Object o1, Object o2) {
+            Object tmp = o1;
+            o1 = o2;
+            o2 = tmp;
+        }
+Gọi swap(jungleDVD, cinderellaDVD); ko làm thay đổi tiêu đề của 2 đối tượng.
+Vì phương thức chỉ hoán đổi bản sao của tham chiếu, không phải tham chiếu thật => đối tượng bên ngoài không bị ảnh hưởng.
+
+        public static void changeTitle(DigitalVideoDisc dvd, String title) {
+            String oldTitle = dvd.getTitle();
+            dvd.setTitle(title);
+            dvd = new DigitalVideoDisc(oldTitle);
+        }
+Gọi changeTitle(jungleDVD, cinderellaDVD.getTitle()); thì title thay đổi.
+Vì:Biến dvd vẫn trỏ đến cùng object với jungleDVD
+   Khi gọi setTitle(), ta đang thay đổi trực tiếp dữ liệu của object
+   Tuy nhiên dòng: dvd = new DigitalVideoDisc(oldTitle); chỉ thay đổi biến cục bộ trong hàm không ảnh hưởng tới object ban đầu
+
+=> Kết luận: Không thể hoán đổi 2 object bằng cách đổi reference
+             Nhưng có thể thay đổi nội dung object thông qua reference
+
+swap đúng:
+        public static void swap(DigitalVideoDisc o1, DigitalVideoDisc o2) {
+            String temp = o1.getTitle();
+            o1.setTitle(o2.getTitle());
+            o2.setTitle(temp);
+        }
