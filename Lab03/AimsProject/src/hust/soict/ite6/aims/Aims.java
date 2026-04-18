@@ -31,3 +31,5 @@ public class Aims {
         System.out.println(anOrder.totalCost());
     }
 }
+
+// Demo release flow
