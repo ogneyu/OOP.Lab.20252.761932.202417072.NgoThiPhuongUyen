@@ -1,16 +1,35 @@
 package hust.soict.ite6.garbage;
 
-public class NoGarbage {
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
+public class NoGarbage {
     public static void main(String[] args) {
 
-        StringBuilder sb = new StringBuilder();
+        String fileName = "ALongFile.exe";
+        byte[] data = {0};
+        long startTime;
+        long endTime;
 
-        for (int i = 0; i < 100000; i++) {
-            sb.append("garbage");
+        try {
+            data = Files.readAllBytes(Paths.get(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        String result = sb.toString();
-        System.out.println("Done");
+        startTime = System.currentTimeMillis();
+
+        StringBuffer buffer = new StringBuffer();
+        for (byte value : data) {
+            buffer.append((char) value);
+        }
+
+        String result = buffer.toString();
+
+        endTime = System.currentTimeMillis();
+
+        System.out.println("Execution time: " + (endTime - startTime) + " ms");
+        System.out.println("Length: " + result.length());
     }
 }
