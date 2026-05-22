@@ -1,0 +1,34 @@
+Q1_Phan9: Which classes are aggregates of other classes? Checking all constructors of whole classes if they initialize for their parts?
+
+Các lớp đóng vai trò tập hợp (aggregate) của các lớp khác trong hệ thống là:
+	+ Cart: chứa danh sách các đối tượng Media
+	+ Store: chứa danh sách các đối tượng Media
+	+ CompactDisc: chứa danh sách các đối tượng Track
+Kiểm tra các constructor: Các thuộc tính tập hợp dạng danh sách (ArrayList) bên trong các lớp này bắt buộc phải được khởi tạo cấp phát bộ nhớ (dùng từ khóa "new") ngay khi khai báo thuộc tính hoặc bên trong các hàm khởi tạo (Constructor). Việc này giúp đảm bảo phần "bộ phận" luôn sẵn sàng và tránh lỗi NullPointerException khi thực hiện thêm/xóa phần tử.
+
+Q2_Phan10: If the passing object is not an instance of Media, what happens?
+
+Nếu đối tượng truyền vào không phải là một instance của Media, việc cố tình ép kiểu trực tiếp (cast) sẽ khiến hệ thống ném ra ngoại lệ ClassCastException tại thời điểm chạy (runtime) và làm chương trình bị dừng đột ngột.
+Cách xử lý chuẩn: Trong phương thức equals(), ta bắt buộc phải sử dụng toán tử "instanceof" để kiểm tra kiểu dữ liệu trước khi ép kiểu. Nếu đối tượng không phải instance của Media thì lập tức trả về false.
+
+Q3_Phan11: Observe what happens and explain in detail.
+
+Hiện tượng: Khi duyệt một danh sách chung List<Media> và gọi phương thức toString(), thông tin in ra màn hình hiển thị rất chi tiết và chính xác theo đúng định dạng riêng của từng lớp con thực tế (Book, CompactDisc, hoặc DigitalVideoDisc).
+Giải thích chi tiết: Đây là minh chứng của tính đa hình (Polymorphism) trong Java. Tại thời điểm biên dịch (compile-time), trình biên dịch chỉ nhận biết đối tượng là kiểu Media chung. Nhưng tại thời điểm thực thi (runtime), cơ chế Dynamic Method Dispatch của Java sẽ tự động tìm đối tượng thực sự trong bộ nhớ và gọi chính xác phương thức toString() đã được ghi đè (overridden) ở lớp con tương ứng.
+
+Q4_Phan12: Sort media in the cart
+
+1, What class should implement the Comparable interface?
+Lớp cha Media nên implement interface Comparable<Media>, vì tất cả các loại phương tiện (Book, CD, DVD) đều là lớp con kế thừa từ Media và chúng đều cần được so sánh, sắp xếp chung trong Giỏ hàng (Cart).
+
+2, In those classes, how should you implement the compareTo() method be to reflect the ordering that we want?
+Trong phương thức Media.compareTo(), logic cần được cài đặt tuần tự: sử dụng phương thức compareToIgnoreCase() để so sánh thuộc tính title theo bảng chữ cái trước. Nếu title giống nhau (kết quả trả về bằng 0), hệ thống sẽ tiếp tục sử dụng Float.compare() để so sánh thuộc tính cost nhằm quyết định thứ tự sắp xếp.
+
+3, Can we have two ordering rules of the item (by title then cost and by cost then title) if we use this Comparable interface approach?
+Không thể.
+Với cách tiếp cận Comparable, mỗi lớp chỉ có thể định nghĩa duy nhất một phương thức compareTo(), nghĩa là chỉ hỗ trợ một quy tắc sắp xếp tự nhiên mặc định (Natural Ordering). Nếu muốn thay đổi linh hoạt giữa nhiều quy tắc sắp xếp khác nhau, hệ thống bắt buộc phải sử dụng interface Comparator.
+
+4, Suppose the DVDs has a different ordering rule from the other media types, that is by title, then decreasing length, then cost. How would you modify your code to allow this?
+Chúng ta có thể giải quyết theo 2 cách:
+	+ Cách 1: Vào lớp con DigitalVideoDisc và tiến hành ghi đè (override) lại phương thức compareTo() của lớp cha Media. Trong hàm này, cài đặt logic ưu tiên so sánh title, tiếp đến là so sánh nghịch đảo thuộc tính length (để sắp xếp giảm dần), cuối cùng mới xét tới cost.
+	+ Cách 2: Định nghĩa một bộ so sánh tĩnh riêng biệt dạng Comparator<DigitalVideoDisc> chuyên dụng cho lớp DVD để không làm ảnh hưởng hay can thiệp trực tiếp vào cấu trúc logic sắp xếp chung của lớp cha Media.
